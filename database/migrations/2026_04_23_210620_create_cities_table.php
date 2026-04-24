@@ -15,10 +15,11 @@ return new class extends Migration
             $table->id();
 
             $table->string('name');
-            $table->string('zip_code', 8);
+            $table->string('zip_code', 8); // String porque pode conter zeros à esquerda
             $table->char('ddd', 2);
-            $table->string('ibge_code', 7);
+            $table->string('ibge_code', 7); // String porque pode conter zeros à esquerda
             
+            // Relacionamento com a tabela de UFs
             $table->foreignId('uf_id')->constrained('ufs')->onDelete('cascade');
 
             $table->timestamps();
