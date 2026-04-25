@@ -6,11 +6,13 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreCityRequest; 
 use App\Models\City;                   
 use Illuminate\Http\JsonResponse;
+use App\Services\LocationService;
 
 /**
  * CityController
  * - A validação de dados está em App\Http\Requests\StoreCityRequest.
  * - O tratamento global de erros foi implementado em bootstrap/app.php.
+ * - A validação de CEP e código do IBGE foi implementada em App\Services\LocationService
  */
 
 class CityController extends Controller
@@ -38,8 +40,13 @@ class CityController extends Controller
     /**
      * Registro de cidades simples (validação por API externa futuramente)
      */
-    public function store(StoreCityRequest $request)
+    public function store(StoreCityRequest $request, LocationService $service)
     {
+        $data = $request->validated();
+
+        // Valida o CEP e o código do IBGE
+        $service->validateAll($data['zip_code'], $data['ibge_code']);
+
         $city = City::create($request->validated());
 
         return response()->json($city, 201);
@@ -56,8 +63,13 @@ class CityController extends Controller
     /**
      * Atualiza a cidade especifica e retorna os dados
      */
-    public function update(StoreCityRequest $request, City $city)
+    public function update(StoreCityRequest $request, City $city, LocationService $service)
     {
+        $data = $request->validated();
+
+        // Valida o CEP e o código do IBGE
+        $service->validateAll($data['zip_code'], $data['ibge_code']);
+
         $city->update($request->validated());
 
         return response()->json($city->load('uf'));
