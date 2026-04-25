@@ -8,6 +8,7 @@ Este projeto é um sistema de gerenciamento de Cidades e Unidades Federativas (U
 - **Ambiente:** Laravel Sail (Docker)
 - **Banco de Dados:** PostgreSQL
 - **Linguagem:** PHP 8.5.5 
+- **Frontend:** Vue.js 3 (Composition API) & Tailwind CSS
 
 ## Como Instalar e Rodar
 
@@ -37,3 +38,9 @@ Siga os passos abaixo para subir o ambiente:
 
 ### 7. Criar as tabelas e popular o banco
 `./vendor/bin/sail artisan migrate:fresh --seed` 
+
+### 8. Instalar dependências do Frontend
+`./vendor/bin/sail npm install` 
+
+### 9. Rodar o Vite
+`./vendor/bin/sail npm run dev` 
