@@ -64,7 +64,7 @@ class CityController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete a cidade especifica e retorna mensagem de sucesso
      */
     public function destroy(City $city)
     {

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreCityRequest extends FormRequest
 {
@@ -20,12 +21,13 @@ class StoreCityRequest extends FormRequest
     **/
     public function rules(): array
     {
+        
         return [
             'name'      => ['required', 'string', 'max:255'],
             'ddd'       => ['required', 'string', 'size:2'],
             'ibge_code' => ['required', 'string', 'size:7'],
             'uf_id'     => ['required', 'exists:ufs,id'],
-            'zip_code'  => ['required', 'string', 'size:8', 'unique:cities,zip_code,' . $this->route('city')?->id],
+            'zip_code'  => ['required', 'string', 'size:8', Rule::unique('cities', 'zip_code')->ignore($this->route('city'))],
         ];
     }
 
