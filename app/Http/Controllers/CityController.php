@@ -49,7 +49,7 @@ class CityController extends Controller
 
         $city = City::create($request->validated());
 
-        return response()->json($city, 201);
+        return response()->json($city->load("uf"), 201);
     }
 
     /**

@@ -3,6 +3,8 @@
     import api from '../../services/api';
     import SearchInput from '../../components/ui/SearchInput.vue';
     import Table from '../../components/ui/Table.vue';
+    import Modal from '../../components/ui/Modal.vue';
+    import CityForm from './CityForm.vue';
 
     // Pesquisa e filtros
     const searchCity = ref('');
@@ -13,6 +15,74 @@
     const pagination = ref({});
     const loading = ref(false);
     const error = ref(null);
+
+    // Estados dos Modais
+    const showSaveModal = ref(false);
+    const showDeleteModal = ref(false);
+    const selectedCity = ref(null);
+    const cityToEdit = ref(null);
+
+    // Abre modal de Editar
+    const openEditModal = (city) => {
+        error.value = null;
+        cityToEdit.value = { ...city }; 
+        showSaveModal.value = true;
+    };
+
+    // Abre modal de Criar
+    const openCreateModal = () => {
+        error.value = null;
+        cityToEdit.value = { name: '', zip_code: '', ddd: '', ibge_code: '', uf_id: '' };
+        showSaveModal.value = true;
+    };
+
+    // Abre modal de Remover
+    const confirmDelete = (city) => {
+        selectedCity.value = city;
+        showDeleteModal.value = true;
+    };
+
+    // Função para salvar (Store e Update)
+    const handleSave = async (formData) => {
+        loading.value = true;
+        error.value = null; 
+
+        try {
+
+            if (formData.id) {
+                const response = await api.put(`/cities/${formData.id}`, formData);
+                const index = cities.value.findIndex(c => c.id === formData.id);
+                cities.value[index] = response.data;
+            } else {
+                const response = await api.post('/cities', formData);
+                cities.value.unshift(response.data);
+            }
+
+            showSaveModal.value = false; 
+            
+        } catch (err) {
+            
+            if (err.response && err.response.data) {
+                error.value = err.response.data.message;
+            } else {
+                error.value = "Ocorreu um erro inesperado ao salvar.";
+            }
+        } finally {
+            loading.value = false;
+        }
+    };
+
+    
+    // Deletar a Cidade
+    const handleDelete = async () => {
+        try {
+            await api.delete(`/cities/${selectedCity.value.id}`);
+            showDeleteModal.value = false;
+            fetchCities(); // Recarrega a lista
+        } catch (err) {
+            alert("Erro ao excluir");
+        }
+    };
 
     // Puxa as UFs
     const fetchUfs = async () => {
@@ -98,7 +168,7 @@
                 </div>
             </div>
 
-            <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-bold shadow-md transition-all active:scale-95 whitespace-nowrap">
+            <button @click="openCreateModal" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-bold shadow-md transition-all active:scale-95 whitespace-nowrap">
                 + Nova Cidade
             </button>
         </div>
@@ -122,8 +192,8 @@
                         </td>
                         <td class="px-6 py-4 font-mono text-sm text-gray-500">{{ city?.ibge_code }}</td>
                         <td class="px-6 py-4 text-right space-x-2">
-                            <button class="text-blue-600 hover:underline font-bold text-sm">Editar</button>
-                            <button class="text-red-500 hover:underline font-bold text-sm">Excluir</button>
+                            <button @click="openEditModal(city)" class="text-blue-600 hover:underline font-bold text-sm">Editar</button>
+                            <button @click="confirmDelete(city)" class="text-red-500 hover:underline font-bold text-sm">Excluir</button>
                         </td>
                     </tr>
 
@@ -158,4 +228,34 @@
             </div>
         </div>
     </div>
+
+    <Modal :show="showSaveModal" title="Cadastrar Nova Cidade" @close="showSaveModal = false; error = null">
+            <div v-if="error" class="mb-4 p-3 rounded-lg bg-red-50 border-l-4 border-red-500 text-red-700 text-sm flex items-center gap-2">
+                <span class="font-bold">⚠️ Atenção:</span> {{ error }}
+            </div>
+
+        <CityForm 
+            :city="cityToEdit" 
+            :ufs="ufs" 
+            :loading="loading"
+            @save="handleSave" 
+            @cancel="showSaveModal = false" 
+        />
+    </Modal>
+
+    <Modal :show="showDeleteModal" title="Confirmar Exclusão" @close="showDeleteModal = false">
+        <div class="text-center">
+            <div class="text-2xl mb-4 text-red-500">
+                ⚠️  
+            </div>
+            <p class="text-gray-600">Tem certeza que deseja excluir a cidade <strong>{{ selectedCity?.name }}</strong>?</p>
+            <p class="text-xs text-gray-400 mt-2 italic">Esta ação não pode ser desfeita.</p>
+
+            <div class="flex justify-center gap-3 mt-8">
+                <button @click="showDeleteModal = false" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-bold">Cancelar</button>
+                <button @click="handleDelete" class="px-4 py-2 bg-red-600 text-white rounded-lg font-bold shadow-lg shadow-red-200">Sim, Excluir</button>
+            </div>
+        </div>
+    </Modal>
+
 </template>
