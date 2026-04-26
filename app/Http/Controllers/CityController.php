@@ -32,7 +32,7 @@ class CityController extends Controller
             $query->where('uf_id', $request->get('uf_id'));
         }
 
-        $cities = $query->paginate(15);
+        $cities = $query->paginate(10);
 
         return response()->json($cities);
     }
