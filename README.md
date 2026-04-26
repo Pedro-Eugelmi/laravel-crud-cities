@@ -1,4 +1,4 @@
-# Gerenciador de Cidades - Teste Técnico (trabalho em progresso)
+# Gerenciador de Cidades - Teste Técnico
 
 Este projeto é um sistema de gerenciamento de Cidades e Unidades Federativas (UFs) desenvolvido em **Laravel 11**. A aplicação permite o cadastro automatizado de cidades através da integração com APIs externas, garantindo a integridade dos dados.
 
@@ -9,6 +9,17 @@ Este projeto é um sistema de gerenciamento de Cidades e Unidades Federativas (U
 - **Banco de Dados:** PostgreSQL
 - **Linguagem:** PHP 8.5.5 
 - **Frontend:** Vue.js 3 (Composition API) & Tailwind CSS
+
+## 🛣️ Endpoints Principais
+
+### Cidades
+- `GET /api/cities` - Listagem paginada com filtros (`s` e `uf_id`).
+- `POST /api/cities` - Cadastro de nova cidade.
+- `PUT /api/cities/{id}` - Atualização de dados.
+- `DELETE /api/cities/{id}` - Remoção lógica/física.
+
+### UFs
+- `GET /api/ufs` - Lista todos os estados .
 
 ## Como Instalar e Rodar
 
