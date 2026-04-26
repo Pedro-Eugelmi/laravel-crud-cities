@@ -1,20 +1,40 @@
 <script setup>
 import { ref } from 'vue'
+import Header from './components/Header.vue'
+import Card from './components/Card.vue'
+import Dashboard from './pages/Dashboard.vue'
+import CityList from './pages/cities/CityList.vue'
+import UfList from './pages/ufs/UfList.vue'
 
-const titulo = ref('Testando Vue 3 + Tailwind')
+const currentPath = ref('dashboard')
+
+// Define as rotas e seus componentes correspondentes
+const routes = {
+  'dashboard': Dashboard,
+  'cities': CityList,
+  'ufs': UfList
+}
+
+const navigate = (page) => {
+  currentPath.value = page
+}
 
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-100 flex flex-col items-center justify-center">
-    <div class="bg-white p-8">
-      <h1 class="text-2xl font-bold text-gray-800">{{ titulo }}</h1>
-      <p class="text-gray-600 mt-2">Olá mundo!!!!</p>
-      <button 
-        @click="titulo = 'Funcionando!'" 
-        class="mt-4 px-4 py-2 bg-blue-600 text-white">
-        Testar Vue
-      </button>
-    </div>
+  <div class="min-h-screen bg-gray-50 flex flex-col font-sans">
+    
+    <Header :current-page="currentPath" @change-page="navigate"/>
+
+    <main class="flex-1">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <Card>
+          <component :is="routes[currentPath]" />
+        </Card>
+
+      </div>
+    </main>
+
   </div>
 </template>
