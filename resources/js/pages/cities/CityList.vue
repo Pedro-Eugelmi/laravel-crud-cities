@@ -145,19 +145,19 @@
 <template>
     <div class="space-y-6">
         <div class="flex flex-col md:flex-row gap-4 items-end justify-between bg-gray-50 p-4 rounded-xl border border-gray-100">
-            <div class="flex flex-1 gap-4 w-full">
+            <div class="flex flex-col md:flex-row flex-1 gap-4 w-full">
                 <SearchInput 
                     v-model="searchCity"
                     label="Cidades"
-                    placeholder="Buscar por nome ou IBGE..."
+                    placeholder="Buscar por nome"
                 />
 
-                <div class="w-32 flex flex-col justify-end">
+                <div class="flex flex-col justify-end">
                     <label class="block text-xs font-semibold text-gray-500 uppercase mb-1 ml-1">UF</label>
 
                     <select 
                         v-model="selectedUf"
-                        class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none bg-white font-medium transition mt-1"
+                        class="w-full md:w-32 px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none bg-white font-medium transition mt-1"
                     >
                         <option value="">Todas</option>
         
@@ -168,7 +168,7 @@
                 </div>
             </div>
 
-            <button @click="openCreateModal" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-bold shadow-md transition-all active:scale-95 whitespace-nowrap">
+            <button @click="openCreateModal" class="w-full lg:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 lg:py-2.5 rounded-lg font-bold shadow-md shadow-blue-100 transition-all active:scale-95 whitespace-nowrap flex items-center justify-center gap-2">
                 + Nova Cidade
             </button>
         </div>
@@ -176,24 +176,42 @@
         <div class="overflow-hidden border border-gray-200 rounded-xl bg-white">
             <Table :loading="loading">
                 <template #header>
-                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Nome</th>
-                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">UF</th>
-                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">IBGE</th>
+                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left hidden md:table-cell">ID</th>
+                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left">Nome</th>
+                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left hidden md:table-cell">UF</th>
+                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left hidden md:table-cell">IBGE</th>
                     <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Ações</th>
                 </template>
 
                 <template #body>
-                    <tr v-for="city in cities" :key="city?.id" class="hover:bg-blue-50/30 transition-colors">
-                        <td class="px-6 py-4 font-semibold text-gray-800">{{ city?.name }}</td>
-                        <td class="px-6 py-4">
-                            <span class="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-md text-xs font-black uppercase">
-                                {{ city?.uf?.name }}
+                    <tr v-for="city in cities" :key="city?.id" class="hover:bg-blue-50/30 transition-colors border-b border-gray-100 last:border-0">
+
+                        <td class="px-6 py-4 text-sm text-gray-500 font-mono hidden md:table-cell">
+                            {{ city?.id }}
+                        </td>
+
+                        <td class="px-4 md:px-6 py-4 font-semibold text-gray-800">
+                            <div class="flex items-center gap-2">
+                                {{ city?.name }} 
+                                <span class="text-[10px] bg-gray-100 px-1.5 py-0.5 rounded text-gray-500 md:hidden font-black">
+                                    {{ city?.uf?.state_code }}
+                                </span>
+                            </div>
+                        </td>
+
+                        <td class="px-6 py-4 hidden md:table-cell">
+                            <span class="px-2.5 py-1 bg-gray-100 whitespace-nowrap text-gray-600 rounded-md text-xs font-black uppercase">
+                                {{ city?.uf?.state_code }}
                             </span>
                         </td>
-                        <td class="px-6 py-4 font-mono text-sm text-gray-500">{{ city?.ibge_code }}</td>
-                        <td class="px-6 py-4 text-right space-x-2">
-                            <button @click="openEditModal(city)" class="text-blue-600 hover:underline font-bold text-sm">Editar</button>
-                            <button @click="confirmDelete(city)" class="text-red-500 hover:underline font-bold text-sm">Excluir</button>
+
+                        <td class="px-6 py-4 font-mono text-sm text-gray-500 hidden md:table-cell">
+                            {{ city?.ibge_code }}
+                        </td>
+
+                        <td class="px-4 md:px-6 py-4 text-right whitespace-nowrap space-x-3">
+                            <button @click="openEditModal(city)" class="text-blue-600 hover:text-blue-800 font-bold text-sm transition-colors">Editar</button>
+                            <button @click="confirmDelete(city)" class="text-red-500 hover:text-red-700 font-bold text-sm transition-colors">Excluir</button>
                         </td>
                     </tr>
 

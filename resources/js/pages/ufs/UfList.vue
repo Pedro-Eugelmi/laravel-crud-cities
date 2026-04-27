@@ -105,7 +105,7 @@
                     placeholder="Buscar por nome ou sigla..."
                 />
             </div>
-            <button @click="openCreateModal" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-bold shadow-md transition-all active:scale-95 whitespace-nowrap">
+            <button @click="openCreateModal" class="w-full lg:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 lg:py-2.5 rounded-lg font-bold shadow-md shadow-blue-100 transition-all active:scale-95 whitespace-nowrap flex items-center justify-center gap-2">
                 + Nova UF
             </button>
         </div>
@@ -113,30 +113,49 @@
         <div class="overflow-hidden border border-gray-200 rounded-xl bg-white shadow-sm">
             <Table :loading="loading">
                 <template #header>
-                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">ID</th>
-                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Nome do Estado</th>
-                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Sigla</th>
+                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left hidden md:table-cell">ID</th>
+                    
+                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left">Estado</th>
+                    
+                    <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left hidden md:table-cell">Sigla</th>
+                    
                     <th class="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Ações</th>
                 </template>
 
                 <template #body>
                     <template v-if="ufs.length > 0">
-                        <tr v-for="uf in ufs" :key="uf.id" class="hover:bg-blue-50/30 transition-colors">
-                            <td class="px-6 py-4 text-sm text-gray-500 font-mono">{{ uf.id }}</td>
-                            <td class="px-6 py-4 font-semibold text-gray-800">{{ uf.name }}</td>
-                            <td class="px-6 py-4">
-                                <span class="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-md text-xs font-black uppercase tracking-wider">
+                        <tr v-for="uf in ufs" :key="uf.id" class="hover:bg-blue-50/30 transition-colors border-b border-gray-100 last:border-0">
+                            
+                            <td class="px-6 py-4 text-sm text-gray-500 font-mono hidden md:table-cell">
+                                #{{ uf.id }} 
+                            </td>
+
+                            <td class="px-4 md:px-6 py-4 font-semibold text-gray-800">
+                                <div class="flex items-center gap-2">
+                                    {{ uf.name }}
+                                    <span class="font-medium text-gray-500 md:hidden font-black">
+                                        ({{ uf.state_code }})
+                                    </span>
+                                </div>
+                            </td>
+
+                            <td class="px-6 py-4 hidden md:table-cell">
+                                <span class="px-2.5 py-1 bg-gray-100 whitespace-nowrap text-gray-600 rounded-md text-xs font-black uppercase">
                                     {{ uf.state_code }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 text-right space-x-2">
-                                <button @click="openEditModal(uf)" class="text-blue-600 hover:underline font-bold text-sm">Editar</button>
-                                <button @click="confirmDelete(uf)" class="text-red-500 hover:underline font-bold text-sm">Excluir</button>
+
+                            <td class="px-4 md:px-6 py-4 text-right whitespace-nowrap space-x-3">
+                                <button @click="openEditModal(uf)" class="text-blue-600 hover:text-blue-800 font-bold text-sm transition-colors">Editar</button>
+                                <button @click="confirmDelete(uf)" class="text-red-500 hover:text-red-700 font-bold text-sm transition-colors">Excluir</button>
                             </td>
                         </tr>
                     </template>
+
                     <tr v-else-if="!loading">
-                        <td colspan="4" class="px-6 py-12 text-center text-gray-400 italic">Nenhum estado encontrado.</td>
+                        <td colspan="4" class="px-6 py-12 text-center text-gray-400 italic">
+                            Nenhum estado encontrado.
+                        </td>
                     </tr>
                 </template>
             </Table>
