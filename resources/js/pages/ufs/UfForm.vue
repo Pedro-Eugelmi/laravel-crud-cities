@@ -19,8 +19,8 @@ watch(() => props.uf, (newVal) => {
 
 // Força a sigla a ser sempre maiúscula e apenas letras
 const handleStateCode = (e) => {
-    let v = e.target.value.toUpperCase().replace(/[^A-Z]/g, '');
-    formData.value.state_code = v.substring(0, 2);
+    let value = e.target.value.toUpperCase().replace(/[^A-Z]/g, '');
+    formData.value.state_code = value.substring(0, 2);
     e.target.value = formData.value.state_code;
 };
 

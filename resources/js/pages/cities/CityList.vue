@@ -216,7 +216,7 @@
                     </tr>
 
                     <tr v-if="!loading && cities.length === 0">
-                        <td colspan="4" class="px-6 py-12 text-center text-gray-400 italic">
+                        <td colspan="5" class="px-6 py-12 text-center text-gray-400 italic">
                             Nenhuma cidade encontrada.
                         </td>
                     </tr>

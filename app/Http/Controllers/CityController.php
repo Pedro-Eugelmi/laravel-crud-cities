@@ -22,7 +22,7 @@ class CityController extends Controller
      */
     public function index(Request $request)
     {
-        $query = City::with('uf');
+        $query = City::with('uf')->latest();
 
         if ($request->filled('s')) {
             $query->where('name', 'ilike', '%' . $request->get('s') . '%');
@@ -47,7 +47,7 @@ class CityController extends Controller
         // Valida o CEP e o código do IBGE
         $service->validateAll($data['zip_code'], $data['ibge_code'], $data['uf_id']);
 
-        $city = City::create($request->validated());
+        $city = City::create($data);
 
         return response()->json($city->load("uf"), 201);
     }
@@ -70,7 +70,7 @@ class CityController extends Controller
         // Valida o CEP e o código do IBGE
         $service->validateAll($data['zip_code'], $data['ibge_code'], $data['uf_id']);
 
-        $city->update($request->validated());
+        $city->update($data);
 
         return response()->json($city->load('uf'));
     }

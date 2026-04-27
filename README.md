@@ -59,7 +59,7 @@ Siga os passos abaixo para subir o ambiente:
 `cp .env.example .env`
 
 ### 4. Instalar as dependências
-`sudo docker run --rm -v "$(pwd):/opt" -w /opt laravelsail/php85-composer:latest composer install`
+`docker run --rm -v "$(pwd):/opt" -w /opt laravelsail/php85-composer:latest composer install`
     
 ### 5. Iniciar o sail
 `./vendor/bin/sail up -d`

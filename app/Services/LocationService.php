@@ -21,11 +21,11 @@ class LocationService
             // timeout de 5 segundos, para não travar o sistema 
             $response = Http::timeout(5)->get("https://viacep.com.br/ws/{$cleanZip}/json/");
 
+            $data = $response->json();
+
             if ($response->failed() || isset($response->json()['erro'])) {
                 abort(422, 'O CEP informado é inválido ou não foi encontrado.');
             }
-
-            $data = $response->json();
 
             // O código do IBGE retornado pelo ViaCEP deve ser o mesmo enviado pelo usuário
             if ($data['ibge'] != $ibgeCode) {

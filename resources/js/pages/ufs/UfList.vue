@@ -72,6 +72,7 @@
     const fetchUfs = async (page = 1) => {
         loading.value = true;
         error.value = null;
+        
         try {
             const response = await api.get('/ufs', {
                 params: { page, s: searchQuery.value }

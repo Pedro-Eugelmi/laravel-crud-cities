@@ -29,9 +29,9 @@ const navigate = (page) => {
     <main class="flex-1">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         
-        <Card>
-          <component :is="routes[currentPath]" />
-        </Card>
+      <Card>
+        <component :is="routes[currentPath]" />
+      </Card>
 
       </div>
     </main>

@@ -2,6 +2,14 @@
     import { ref, watch } from 'vue';
     import axios from 'axios'; 
 
+    // Formatar CEP
+    const formatCEP = (value) => {
+        if (!value) return '';
+        const clean = value.replace(/\D/g, '');
+        return clean.replace(/^(\d{5})(\d)/, '$1-$2').substring(0, 9);
+    };
+
+    // Define os dados
     const props = defineProps({
         city: { 
             type: Object, 
@@ -11,14 +19,23 @@
         loading: Boolean
     });
 
+    // Define os eventos emitidos
     const emit = defineEmits(['save', 'cancel']);
-    const formData = ref({ ...props.city });
+    const formData = ref({ 
+        ...props.city,
+        zip_code: formatCEP(props.city.zip_code) 
+    });
 
+
+    // Sincroniza os dados do formulário com as props
     watch(() => props.city, (newVal) => {
-        formData.value = { ...newVal };
+        formData.value = { 
+            ...newVal,
+            zip_code: formatCEP(newVal.zip_code)
+        };
     }, { deep: true });
 
-    // Bucas os dados da cidade pelo via cep e preenche os campos automaticamente
+    // Buscas os dados da cidade pelo via cep e preenche os campos automaticamente
     const fetchViaCep = async (cep) => {
         const cleanCep = cep.replace(/\D/g, '');
         if (cleanCep.length !== 8) return;
@@ -43,30 +60,31 @@
         }
     };
 
+    // Formata o CEP 
     const handleZipCode = (e) => {
-        let v = e.target.value.replace(/\D/g, '');
+        const value = formatCEP(e.target.value);
         
-        if (v.length > 8) v = v.substring(0, 8);
-        
-        if (v.length === 8) fetchViaCep(v);
+        formData.value.zip_code = value;
+        e.target.value = value; 
 
-        v = v.replace(/^(\d{5})(\d)/, '$1-$2');
-        
-        formData.value.zip_code = v;
-        e.target.value = v; 
+        const clean = value.replace(/\D/g, '');
+        if (clean.length === 8) fetchViaCep(clean);
     };
 
+    // Permite apenas números e limita o tamanho do campo
     const handleOnlyNumbers = (e, key, length) => {
-        let v = e.target.value.replace(/\D/g, '');
-        if (v.length > length) v = v.substring(0, length);
-        formData.value[key] = v;
-        e.target.value = v;
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > length) value = value.substring(0, length);
+        formData.value[key] = value;
+        e.target.value = value;
     };
 
+    // Envia o formulário
     const handleSubmit = () => {
         const data = { ...formData.value, zip_code: formData.value.zip_code.replace(/\D/g, '') };
         emit('save', data);
     };
+
 </script>
 
 <template>
