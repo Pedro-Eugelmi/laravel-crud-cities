@@ -49,7 +49,7 @@
                 ufs.value[index] = response.data;
             } else {
                 const response = await api.post('/ufs', formData);
-                ufs.value.unshift(response.data); // Feedback visual imediato no topo
+                ufs.value.unshift(response.data); 
             }
             showSaveModal.value = false;
         } catch (err) {
@@ -172,9 +172,11 @@
     </div>
 
     <Modal :show="showSaveModal" :title="ufToEdit?.id ? 'Editar Estado' : 'Novo Estado'" @close="showSaveModal = false; error = null">
-        <div v-if="error" class="mb-4 p-3 rounded-lg bg-red-50 border-l-4 border-red-500 text-red-700 text-sm flex items-center gap-2">
-            <span class="font-bold">⚠️ Atenção:</span> {{ error }}
+        <div v-if="error" class="mb-4 p-3 rounded-lg bg-red-50 border-l-4 border-red-500 text-red-700 text-sm flex flex-col items-center gap-1">
+            <p class="font-bold">⚠️ Atenção:</p>
+            <span>{{ error }}</span>
         </div>
+
         <UfForm :uf="ufToEdit" :loading="loading" @save="handleSave" @cancel="showSaveModal = false" />
     </Modal>
 
