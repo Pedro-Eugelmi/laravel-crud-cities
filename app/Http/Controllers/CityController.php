@@ -45,7 +45,7 @@ class CityController extends Controller
         $data = $request->validated();
 
         // Valida o CEP e o código do IBGE
-        $service->validateAll($data['zip_code'], $data['ibge_code']);
+        $service->validateAll($data['zip_code'], $data['ibge_code'], $data['uf_id']);
 
         $city = City::create($request->validated());
 
@@ -68,7 +68,7 @@ class CityController extends Controller
         $data = $request->validated();
 
         // Valida o CEP e o código do IBGE
-        $service->validateAll($data['zip_code'], $data['ibge_code']);
+        $service->validateAll($data['zip_code'], $data['ibge_code'], $data['uf_id']);
 
         $city->update($request->validated());
 

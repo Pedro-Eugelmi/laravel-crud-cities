@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use App\Models\Uf;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class LocationService
@@ -11,7 +12,7 @@ class LocationService
     /**
      * Valida se o CEP existe e se os dados batem com o esperado.
      */
-    public function isValidZipCode(string $zipCode, string $ibgeCode): bool
+    public function isValidZipCode(string $zipCode, string $ibgeCode, int $ufId): bool
     {
         // Limpa o CEP, deixa apenas números
         $cleanZip = preg_replace('/[^0-9]/', '', $zipCode);
@@ -24,11 +25,19 @@ class LocationService
                 abort(422, 'O CEP informado é inválido ou não foi encontrado.');
             }
 
-            // O código do IBGE retornado pelo ViaCEP deve ser o mesmo enviado pelo usuário
-            if ($response->json()['ibge'] != $ibgeCode) {
-                abort(422, 'O CEP informado não corresponde ao IBGE.');
+            $data = $response->json();
 
+            // O código do IBGE retornado pelo ViaCEP deve ser o mesmo enviado pelo usuário
+            if ($data['ibge'] != $ibgeCode) {
+                abort(422, 'O CEP informado não corresponde ao IBGE.');
             } 
+
+            // Verifica se o Estado bate 
+            $selectedUf = Uf::find($ufId);
+            
+            if (!$selectedUf || strtoupper($data['uf']) !== strtoupper($selectedUf->state_code)) {
+                abort(422, "O CEP informado pertence ao estado ({$data['uf']}), mas você selecionou {$selectedUf->state_code}.");
+            }
 
             return true;
             
@@ -62,11 +71,11 @@ class LocationService
     }
 
     /**
-     * Valida o Código IBGE e CEP
+     * Valida o Código IBGE e CEP e estado
      */
-    public function validateAll(string $zipCode, string $ibgeCode): void
+    public function validateAll(string $zipCode, string $ibgeCode, int $ufId): void
     {
-        $this->isValidZipCode($zipCode, $ibgeCode);
+        $this->isValidZipCode($zipCode, $ibgeCode, $ufId);
 
         $this->isValidIbge($ibgeCode);
     }
